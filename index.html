@@ -232,6 +232,10 @@
 
             // Load an isochrone using Metromobilité OTP
             loadIsochrone: function(pos, mode, callback) {
+                if (mode == "TRANSIT") {
+                    mode = "TRANSIT,WALK";
+                }
+
                 var uri = "http://data.metromobilite.fr/api/routers/default/isochrone?algorithm=recursiveGrid&" +
                         "fromPlace=" + pos.lat + "," + pos.lng + "&date=2016/06/09&time=08:00:00&" +
                         "maxWalkDistance=1000&mode=" + mode + "&precisionMeters=200&cutoffSec=300&cutoffSec=600&" +
