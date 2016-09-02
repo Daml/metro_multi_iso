@@ -178,8 +178,6 @@
                         "/" + geo.Round(center.lat) + "/" + geo.Round(center.lng) +
                         "/" + geo.Round(map.origin.getLatLng().lat) + "/" + geo.Round(map.origin.getLatLng().lng);
 
-                app.navigate(uri, {trigger: false});
-
                 var view = {
                     lat: map.getCenter().lat,
                     lng: map.getCenter().lng,
@@ -189,6 +187,8 @@
                 if ((view.lat === app.view.lat) && (view.lng === app.view.lng) && (view.zoom === app.view.zoom)) {
                     return;
                 }
+
+                app.navigate(uri, {trigger: false});
 
                 app.view = view;
                 app.updateOtherMaps(map);
