@@ -67,23 +67,11 @@
             return Math.round(pos * 10000) / 10000;
         };
 
-
         // Leaflet maps init
         // -----------------
 
         var maps = _.map(["walk", "bicycle", "transit", "car"], function (mode) {
-            var layers = {
-                "OSM B&W": L.tileLayer("//tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png", {
-                    attribution: "Isochrones &copy; <a href=http://www.metromobilite.fr/>Metromobilité</a> | Carte &copy; <a href=http://osm.org/copyright>OpenStreetMap</a> contributors"
-                }),
-                "OSM": L.tileLayer("//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-                    attribution: "Isochrones &copy; <a href=http://www.metromobilite.fr/>Metromobilité</a> | Carte & données &copy; <a href=http://osm.org/copyright>OpenStreetMap</a> contributors"
-                }),
-                "Vélo": L.tileLayer("//{s}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png", {
-                    attribution: "Isochrones &copy; <a href=http://www.metromobilite.fr/>Metromobilité</a> | Carte &copy; <a href=http://www.thunderforest.com/>Thunderforest</a> | Données &copy; <a href=http://osm.org/copyright>OpenStreetMap</a> contributors"
-                }),
-                },
-                map = L.map("map_" + mode, {
+            var map = L.map("map_" + mode, {
                     zoomControl: mode === "walk",
                     attributionControl: mode === "car",
                     center: L.latLng(45.1793, 5.7169),
@@ -91,15 +79,18 @@
                 })
                 .on("moveend", function () {
                     app.updateUri(mode, this);
-                })
-                .on("baselayerchange", function (e) {
-                    app.updateLayer(layers[e.name], this);
                 });
+
+                L.tileLayer("//tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png", {
+                    attribution: "Isochrones &copy; <a href=http://www.metromobilite.fr/>Metromobilité</a> | Carte &copy; <a href=http://osm.org/copyright>OpenStreetMap</a> contributors"
+                }).addTo(map);
 
                 if (mode === "walk") {
                     map.on("locationfound", function (e) {
                         map.origin.setLatLng(e.latlng);
                         app.updateUri(mode, map);
+                        app.moveMarkers(map);
+                    }).on("locationerror", function () {
                         app.moveMarkers(map);
                     });
                 }
@@ -113,11 +104,6 @@
                         app.updateUri(mode, map);
                         app.moveMarkers(map);
                     });
-
-            layers.Metro.addTo(map);
-            //if (mode == "map_bicycle") {
-            //    L.control.layers(layers).addTo(map);
-            //}
 
             // Contours métropole
             // ------------------
@@ -146,7 +132,6 @@
 
             // Display the map (on load or URI change)
             showMap: function (z, lat, lng, olat, olng) {
-                console.log("Show map : Zoom ", z, "Center", lat + "," + lng, "From", olat + "," + olng);
                 maps[0].setView(L.latLng(lat, lng), z);
                 maps[0].origin.setLatLng(L.latLng(olat, olng));
                 this.moveMarkers(maps[0]);
@@ -167,6 +152,7 @@
                     if (map === updatedmap) {
                         return;
                     }
+
                     map.addLayer(name.addTo(map));
                 });
             },
@@ -221,8 +207,6 @@
 
             // Select and load destinations POI
             loadIsochrones: function (pos) {
-                var bounds = [];
-
                 _.each(maps, function (map) {
                     // Clear current isochrones
                     if (("dataLayer" in map) && (map.dataLayer instanceof L.LayerGroup)) {
@@ -239,17 +223,8 @@
                                 layer.bindPopup("<b>" + map.otp_mode + "</b> : " + Math.round(feature.properties.time / 60) + "min");
                             },
                         }).addTo(map);
-                        bounds.push(map.dataLayer.getBounds());
-                        app.updateBounds(bounds);
                     });
                 });
-            },
-
-            // Update maps bounds based on ischones responses
-            updateBounds: function(bounds) {
-                if (bounds.length === maps.length) {
-                    console.log("Done !");
-                }
             },
 
             // Load an isochrone using Metromobilité OTP
