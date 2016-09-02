@@ -147,16 +147,6 @@
                 });
             },
 
-            updateLayer: function (name, updatedmap) {
-                _.each(maps, function (map) {
-                    if (map === updatedmap) {
-                        return;
-                    }
-
-                    map.addLayer(name.addTo(map));
-                });
-            },
-
             // Update URI with current map status
             updateUri: function (key, map) {
                 var center = map.getCenter(),
