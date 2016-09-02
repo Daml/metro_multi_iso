@@ -84,6 +84,14 @@
                     app.updateLayer(layers[e.name], this);
                 });
 
+                if (mode === "walk") {
+                    map.on("locationfound", function (e) {
+                        map.origin.setLatLng(e.latlng);
+                        app.updateUri(mode, map);
+                        app.moveMarkers(map);
+                    });
+                }
+
                 map.otp_mode = mode;
 
                 map.origin = L.marker(L.latLng(45.1923, 5.6951), {draggable: true, title: "Origine"})
@@ -112,12 +120,17 @@
         var app = new (Backbone.Router.extend({
             // Register routes
             routes: {
+                "": "home",
                 "map/:z/:lat/:lng/:olat/:olng": "showMap"
             },
 
             // Common map view
             // Used to discard "move" event loop between maps
             view: {lat: 0, lng: 0, zoom: 0},
+
+            home: function () {
+                maps[0].locate({setView: false});
+            },
 
             // Display the map (on load or URI change)
             showMap: function (z, lat, lng, olat, olng) {
