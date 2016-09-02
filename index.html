@@ -260,7 +260,7 @@
 
                 var now = new Date(),
                     date = now.getFullYear() + "/" + ("0" + now.getMonth()).substr(-2) + "/" + ("0" + now.getDate()).substr(-2),
-                    uri = "http://data.metromobilite.fr/api/routers/default/isochrone?algorithm=recursiveGrid&" +
+                    uri = "otp_metromobilite.php?algorithm=recursiveGrid&" +
                         "fromPlace=" + pos.lat + "," + pos.lng + "&date=" + date + "&time=12:00:00&" +
                         "maxWalkDistance=1000&mode=" + mode + "&precisionMeters=200&cutoffSec=300&cutoffSec=600&" +
                         "cutoffSec=900&cutoffSec=1200&cutoffSec=1500&cutoffSec=1800";
