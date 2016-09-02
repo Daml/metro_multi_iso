@@ -61,8 +61,8 @@
 
         var maps = _.map(["walk", "bicycle", "transit", "car"], function (mode) {
             var layers = {
-                "Metro": L.tileLayer("http://data.metromobilite.fr/carte/{z}/{x}/{y}.png", {
-                    attribution: "Isochrones &amp; carte &copy; <a href=http://www.metromobilite.fr/>Metromobilité</a> | Données &copy; <a href=http://osm.org/copyright>OpenStreetMap</a> contributors"
+                "OSM B&W": L.tileLayer("//tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png", {
+                    attribution: "Isochrones &copy; <a href=http://www.metromobilite.fr/>Metromobilité</a> | Carte &copy; <a href=http://osm.org/copyright>OpenStreetMap</a> contributors"
                 }),
                 "OSM": L.tileLayer("//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
                     attribution: "Isochrones &copy; <a href=http://www.metromobilite.fr/>Metromobilité</a> | Carte & données &copy; <a href=http://osm.org/copyright>OpenStreetMap</a> contributors"
